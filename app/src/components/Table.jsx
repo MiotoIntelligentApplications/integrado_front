@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import moment from "moment";
 
 import ErrorMessage from "./ErrorMessage";
-import LeadModal from "./LeadModal";
+import VehicleModal from "./VehicleModal";
 import { UserContext } from "../context/UserContext";
 
 const Table = () => {
   const [token] = useContext(UserContext);
-  const [leads, setLeads] = useState(null);
+  const [vehicles, setVehicles] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [activeModal, setActiveModal] = useState(false);
@@ -26,15 +26,15 @@ const Table = () => {
         Authorization: "Bearer " + token,
       },
     };
-    const response = await fetch(`/api/leads/${id}`, requestOptions);
+    const response = await fetch(`/api/vehicles/${id}`, requestOptions);
     if (!response.ok) {
-      setErrorMessage("Failed to delete lead");
+      setErrorMessage("Erro ao excluir o veículo.");
     }
 
-    getLeads();
+    getVehicles();
   };
 
-  const getLeads = async () => {
+  const getVehicles = async () => {
     const requestOptions = {
       method: "GET",
       headers: {
@@ -42,29 +42,29 @@ const Table = () => {
         Authorization: "Bearer " + token,
       },
     };
-    const response = await fetch("/api/leads", requestOptions);
+    const response = await fetch("/api/vehicles", requestOptions);
     if (!response.ok) {
-      setErrorMessage("Something went wrong. Couldn't load the leads");
+      setErrorMessage("Não foi possível encontrar seus veículos.");
     } else {
       const data = await response.json();
-      setLeads(data);
+      setVehicles(data);
       setLoaded(true);
     }
   };
 
   useEffect(() => {
-    getLeads();
+    getVehicles();
   }, []);
 
   const handleModal = () => {
     setActiveModal(!activeModal);
-    getLeads();
+    getVehicles();
     setId(null);
   };
 
   return (
     <>
-      <LeadModal
+      <VehicleModal
         active={activeModal}
         handleModal={handleModal}
         token={token}
@@ -75,43 +75,55 @@ const Table = () => {
         className="button is-fullwidth mb-5 is-primary"
         onClick={() => setActiveModal(true)}
       >
-        Create Lead
+        Create Vehicle
       </button>
       <ErrorMessage message={errorMessage} />
-      {loaded && leads ? (
+      {loaded && vehicles ? (
         <table className="table is-fullwidth">
           <thead>
             <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Company</th>
-              <th>Email</th>
-              <th>Note</th>
-              <th>Last Updated</th>
-              <th>Actions</th>
+              <th>Placa</th>
+              <th>Cidade de Emplacamento</th>
+              <th>Estado de Emplacamento</th>
+              <th>Tipo do Veículo</th>
+              <th>Fabricante</th>
+              <th>Modelo</th>
+              <th>Cor</th>
+              <th>Ano</th>
+              <th>RENAVAM</th>
+              <th>Chassi</th>
+              <th>Número de Eixos</th>
+              <th>Última Atualização</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {leads.map((lead) => (
-              <tr key={lead.id}>
-                <td>{lead.first_name}</td>
-                <td>{lead.last_name}</td>
-                <td>{lead.company}</td>
-                <td>{lead.email}</td>
-                <td>{lead.note}</td>
-                <td>{moment(lead.date_last_updated).format("MMM Do YY")}</td>
+            {vehicles.map((vehicle) => (
+              <tr key={vehicle.id}>
+                <td>{vehicle.license_plate}</td>
+                <td>{vehicle.license_plate_city}</td>
+                <td>{vehicle.license_plate_state}</td>
+                <td>{vehicle.v_type}</td>
+                <td>{vehicle.v_make}</td>
+                <td>{vehicle.v_model}</td>
+                <td>{vehicle.color}</td>
+                <td>{vehicle.year}</td>
+                <td>{vehicle.renavam}</td>
+                <td>{vehicle.chassis}</td>
+                <td>{vehicle.axles_number}</td>
+                <td>{moment(vehicle.date_last_updated).format("MMM Do YY")}</td>
                 <td>
                   <button
                     className="button mr-2 is-info is-light"
-                    onClick={() => handleUpdate(lead.id)}
+                    onClick={() => handleUpdate(vehicle.id)}
                   >
-                    Update
+                    Editar
                   </button>
                   <button
                     className="button mr-2 is-danger is-light"
-                    onClick={() => handleDelete(lead.id)}
+                    onClick={() => handleDelete(vehicle.id)}
                   >
-                    Delete
+                    Excluir
                   </button>
                 </td>
               </tr>
@@ -119,7 +131,7 @@ const Table = () => {
           </tbody>
         </table>
       ) : (
-        <p>Loading</p>
+        <p>Carregando...</p>
       )}
     </>
   );

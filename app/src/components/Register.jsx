@@ -4,7 +4,12 @@ import { UserContext } from "../context/UserContext";
 import ErrorMessage from "./ErrorMessage";
 
 const Register = () => {
+  const [document, setDocument] = useState("");
   const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmationPassword, setConfirmationPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -14,10 +19,12 @@ const Register = () => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email, hashed_password: password }),
+      body: JSON.stringify({ document: document, email: email, address: address, state: state, city: city, phone: phone, hashed_password: password}),
     };
 
-    const response = await fetch("/api/users", requestOptions);
+    console.log("enviando requisição")
+
+    const response = await fetch("/api/vehicle_owners", requestOptions);
     const data = await response.json();
 
     if (!response.ok) {
@@ -29,11 +36,12 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (password === confirmationPassword && password.length > 5) {
       submitRegistration();
     } else {
       setErrorMessage(
-        "Ensure that the passwords match and greater than 5 characters"
+        "As senhas não conferem ou possuem menos de 6 caracteres."
       );
     }
   };
@@ -41,13 +49,26 @@ const Register = () => {
   return (
     <div className="column">
       <form className="box" onSubmit={handleSubmit}>
-        <h1 className="title has-text-centered">Register</h1>
+        <h1 className="title has-text-centered">Cadastrar</h1>
         <div className="field">
-          <label className="label">Email Address</label>
+          <label className="label">Documento (CPF/CNPJ)</label>
+          <div className="control">
+            <input
+              type="text"
+              placeholder="Insira o Documento"
+              value={document}
+              onChange={(e) => setDocument(e.target.value)}
+              className="input"
+              required
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label className="label">Email</label>
           <div className="control">
             <input
               type="email"
-              placeholder="Enter email"
+              placeholder="Insira o Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="input"
@@ -56,11 +77,63 @@ const Register = () => {
           </div>
         </div>
         <div className="field">
-          <label className="label">Password</label>
+          <label className="label">Endereço</label>
+          <div className="control">
+            <input
+              type="text"
+              placeholder="Insira o Endereço"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="input"
+              required
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label className="label">Cidade</label>
+          <div className="control">
+            <input
+              type="text"
+              placeholder="Insira a Cidade"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="input"
+              required
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label className="label">Estado (UF)</label>
+          <div className="control">
+            <input
+              type="text"
+              placeholder="Insira o Estado (UF)"
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              className="input"
+              required
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label className="label">Telefone</label>
+          <div className="control">
+            <input
+              type="text"
+              placeholder="Insira o Telefone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="input"
+              required
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label className="label">Senha</label>
           <div className="control">
             <input
               type="password"
-              placeholder="Enter password"
+              placeholder="Insira a Senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="input"
@@ -69,7 +142,7 @@ const Register = () => {
           </div>
         </div>
         <div className="field">
-          <label className="label">Confirm Password</label>
+          <label className="label">Confirmar Senha</label>
           <div className="control">
             <input
               type="password"

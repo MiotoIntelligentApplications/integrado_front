@@ -36,13 +36,13 @@ const Login = () => {
   return (
     <div className="column">
       <form className="box" onSubmit={handleSubmit}>
-        <h1 className="title has-text-centered">Login</h1>
+        <h1 className="title has-text-centered">Entrar</h1>
         <div className="field">
-          <label className="label">Email Address</label>
+          <label className="label">Email</label>
           <div className="control">
             <input
               type="email"
-              placeholder="Enter email"
+              placeholder="Insira o Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="input"
@@ -51,11 +51,11 @@ const Login = () => {
           </div>
         </div>
         <div className="field">
-          <label className="label">Password</label>
+          <label className="label">Senha</label>
           <div className="control">
             <input
               type="password"
-              placeholder="Enter password"
+              placeholder="Insira a Senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="input"
